@@ -4,23 +4,23 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface PasswordUpdateCardProps {
     label: string;
-    onConfirm: (password: string) => void;
+    value: string;
+    onChangeText: (text: string) => void;
 }
 
-const PasswordUpdateCard = ({ label, onConfirm }: PasswordUpdateCardProps) => {
-    const [password, setPassword] = useState('');
+const PasswordUpdateCard = ({ label, value, onChangeText }: PasswordUpdateCardProps) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     return (
         <View className="border border-primary/40 rounded-xl p-4 mb-4 bg-white">
             <Text className="text-secondary font-roboto-bold mb-2 text-sm">{label}</Text>
 
-            <View className="flex-row items-center border-b border-primary/40 pb-1 mb-4">
+            <View className="flex-row items-center border-b border-primary/40 pb-1 mt-2">
                 <TextInput
                     className="flex-1 text-base font-roboto-light text-secondary"
                     secureTextEntry={!isPasswordVisible}
-                    value={password}
-                    onChangeText={setPassword}
+                    value={value}
+                    onChangeText={onChangeText}
                     placeholderTextColor="#9CA3AF"
                 />
                 <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} className="p-1">
@@ -32,13 +32,6 @@ const PasswordUpdateCard = ({ label, onConfirm }: PasswordUpdateCardProps) => {
                     />
                 </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-                onPress={() => onConfirm(password)}
-                className="bg-primary rounded-lg py-3 items-center active:opacity-80"
-            >
-                <Text className="text-white text-sm font-roboto-bold">CONFIRMAR</Text>
-            </TouchableOpacity>
         </View>
     );
 };

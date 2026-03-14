@@ -25,7 +25,7 @@ const Dashboard = () => {
           <MenuCard
             title="Documentos"
             Icon={FileText}
-            onPress={() => console.log("Documentos press")}
+            onPress={() => router.push('/documents' as any)}
           />
         </View>
       </View>
