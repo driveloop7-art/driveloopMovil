@@ -1,7 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
+import CustomButton from '../../../components/CustomButton';
 import MenuCard from '../../../components/MenuCard';
 import ScreenLayout from '../../../components/ScreenLayout';
 
@@ -12,9 +13,11 @@ const AccountSettings = () => {
         <ScreenLayout>
             {/* Header con botón Volver */}
             <View className="flex-row items-center mt-4 mb-10">
-                <TouchableOpacity onPress={() => router.back()} className="p-2 -ml-2">
-                    <MaterialIcons name="arrow-back" size={24} color="#111111" />
-                </TouchableOpacity>
+                <CustomButton
+                    variant="textOnly"
+                    iconLeft={<MaterialIcons name="arrow-back" size={24} color="#111111" />}
+                    onPress={() => router.back()}
+                />
                 <View className="flex-1 items-center mr-8">
                     <Text className="text-xl font-roboto-bold text-secondary">Configuración de cuenta</Text>
                 </View>
