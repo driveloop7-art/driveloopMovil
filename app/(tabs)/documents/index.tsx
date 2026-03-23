@@ -28,13 +28,13 @@ const Documents = () => {
                     <View className="flex-row">
                         <MenuCard
                             title="Documento de Identidad"
-                            onPress={() => router.push('/identityDocument' as any)}
+                            onPress={() => router.push('/documents/identityDocument' as any)}
                         />
                     </View>
                     <View className="flex-row">
                         <MenuCard
                             title="Licencia de Conducción"
-                            onPress={() => router.push('/drivingLicense' as any)}
+                            onPress={() => router.push('/documents/drivingLicense' as any)}
                         />
                     </View>
                 </View>
