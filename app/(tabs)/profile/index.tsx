@@ -28,13 +28,13 @@ const AccountSettings = () => {
                     <View className="flex-row">
                         <MenuCard
                             title="Información de perfil"
-                            onPress={() => router.push('/profileInfo' as any)}
+                            onPress={() => router.push('/profile/profileInfo' as any)}
                         />
                     </View>
                     <View className="flex-row">
                         <MenuCard
                             title="Actualizar contraseña"
-                            onPress={() => router.push('/updatePassword' as any)}
+                            onPress={() => router.push('/profile/updatePassword' as any)}
                         />
                     </View>
                     <View className="flex-row">
