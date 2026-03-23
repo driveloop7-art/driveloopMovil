@@ -1,9 +1,11 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
+import CustomButton from "../../../components/CustomButton";
 import InfoCard from "../../../components/InfoCard";
 import ScreenLayout from "../../../components/ScreenLayout";
+
 
 export default function ProfileInfo() {
   const router = useRouter();
@@ -11,9 +13,11 @@ export default function ProfileInfo() {
     <ScreenLayout paddingHorizontal={8}>
       {/*Boton Volver */}
       <View className="flex-row items-center mt-4">
-        <TouchableOpacity onPress={() => router.back()} className="p-2 -ml-2">
-          <MaterialIcons name="arrow-back" size={24} color="#111111" />
-        </TouchableOpacity>
+        <CustomButton
+          variant="textOnly"
+          iconLeft={<MaterialIcons name="arrow-back" size={24} color="#111111" />}
+          onPress={() => router.back()}
+        />
         <View className="flex-1 items-center mr-8">
           <Text className="text-xl font-roboto-bold text-secondary">Información de perfil</Text>
         </View>
