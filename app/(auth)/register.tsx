@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
 import Logo from '../../components/Logo';
@@ -15,9 +15,11 @@ const Register = () => {
         <ScreenLayout>
             {/* Header con botón Volver */}
             <View className="flex-row items-center mt-4">
-                <TouchableOpacity onPress={() => router.back()} className="p-2 -ml-2">
-                    <MaterialIcons name="arrow-back" size={24} color="#111111" />
-                </TouchableOpacity>
+                <CustomButton
+                    variant="textOnly"
+                    iconLeft={<MaterialIcons name="arrow-back" size={24} color="#111111" />}
+                    onPress={() => router.back()}
+                />
                 <View className="flex-1 items-center mr-8">
                     <Text className="text-xl font-roboto-bold text-secondary">Registro</Text>
                 </View>
@@ -57,19 +59,16 @@ const Register = () => {
                 />
 
                 {/* Términos y Condiciones */}
-                <TouchableOpacity
-                    className="flex-row items-center mt-4"
-                    onPress={() => setAccepted(!accepted)}
-                >
-                    <MaterialCommunityIcons
-                        name={accepted ? "checkbox-marked" : "checkbox-blank-outline"}
-                        size={24}
-                        color={accepted ? "#C91843" : "#6B7280"}
+                <View className="flex-row items-center mt-4">
+                    <CustomButton
+                        variant="textOnly"
+                        iconLeft={<MaterialCommunityIcons name={accepted ? "checkbox-marked" : "checkbox-blank-outline"} size={24} color={accepted ? "#C91843" : "#6B7280"} />}
+                        onPress={() => setAccepted(!accepted)}
                     />
                     <Text className="ml-3 text-gray-500 text-sm font-roboto-light">
                         Acepto los <Text className="text-blue-400">términos y condiciones</Text>
                     </Text>
-                </TouchableOpacity>
+                </View>
             </View>
 
             {/* Botón de Registro */}

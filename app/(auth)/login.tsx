@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Text, View } from 'react-native';
 import { loginUser } from '../../api/services/authService';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
@@ -60,11 +60,12 @@ const Login = () => {
                     <Text className="text-gray-500 text-sm font-roboto-light">
                         ¿Olvidaste la contraseña?
                     </Text>
-                    <TouchableOpacity>
-                        <Text className="text-primary font-roboto-bold text-sm">
-                            Clic aquí
-                        </Text>
-                    </TouchableOpacity>
+                    <CustomButton
+                        title="Clic aquí"
+                        variant="textOnly"
+                        textClassName='text-sm'
+                        onPress={() => console.log('Forgot password press')}
+                    />
                 </View>
             </View>
 
@@ -80,11 +81,17 @@ const Login = () => {
             {/* Registro */}
             <View className="flex-row justify-center mt-8">
                 <Text className="text-gray-500 font-roboto-light">¿No tienes una cuenta? </Text>
-                <Link href={"/register" as any} asChild>
+                <CustomButton
+                    title="Regístrate"
+                    variant="textOnly"
+                    textClassName='text-sm'
+                    onPress={() => router.push('/register' as any)}
+                />
+                {/* <Link href={"/register" as any} asChild>
                     <TouchableOpacity>
                         <Text className="text-primary font-roboto-bold">Regístrate</Text>
                     </TouchableOpacity>
-                </Link>
+                </Link> */}
             </View>
         </ScreenLayout>
     );
