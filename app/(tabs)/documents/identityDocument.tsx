@@ -44,7 +44,7 @@ const IdentityDocument = () => {
                     />
                 </View>
 
-                <View className="mb-10 mt-6">
+                <View className="mb-24 mt-6">
                     <CustomButton
                         title="SUBIR IDENTIDAD"
                         onPress={() => console.log('Subir identidad id')}

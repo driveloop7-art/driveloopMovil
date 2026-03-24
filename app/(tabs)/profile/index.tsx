@@ -45,7 +45,7 @@ const AccountSettings = () => {
                     </View>
                 </View>
 
-                <View className="mb-10">
+                <View className="mb-20">
                     <View className="flex-row">
                         <MenuCard
                             title="Cerrar sesión"

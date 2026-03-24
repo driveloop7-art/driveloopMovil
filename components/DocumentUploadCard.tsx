@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
+import CustomButton from './CustomButton';
 
 interface DocumentUploadCardProps {
     label: string;
@@ -12,14 +13,12 @@ const DocumentUploadCard = ({ label, onPressUpload, selectedFileName }: Document
         <View className="border border-primary/40 rounded-xl p-4 mb-4 bg-white">
             <Text className="text-secondary font-roboto-bold mb-3 text-sm">{label}</Text>
 
-            <TouchableOpacity
+            <CustomButton
+                title={selectedFileName ? 'CAMBIAR ARCHIVO' : 'SELECCIONAR ARCHIVO'}
                 onPress={onPressUpload}
-                className="bg-primary rounded-lg py-3 items-center active:opacity-80"
-            >
-                <Text className="text-white text-sm font-roboto-bold">
-                    {selectedFileName ? 'CAMBIAR ARCHIVO' : 'SELECCIONAR ARCHIVO'}
-                </Text>
-            </TouchableOpacity>
+                style={{ borderRadius: 12 }}
+                textClassName="text-white text-xs font-roboto-bold"
+            />
 
             {selectedFileName && (
                 <Text className="text-gray-500 text-xs mt-2 text-center" numberOfLines={1}>
