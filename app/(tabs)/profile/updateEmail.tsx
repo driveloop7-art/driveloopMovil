@@ -3,10 +3,8 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Text, View } from 'react-native';
 import { updateEmailUser } from '../../../api/services/infoUserService';
-import CustomInput from '../../../components/CustomInput';
-
-// Tus componentes obligatorios
 import CustomButton from '../../../components/CustomButton';
+import CustomInput from '../../../components/CustomInput';
 import ScreenLayout from '../../../components/ScreenLayout';
 
 export default function UpdateEmail() {
@@ -14,19 +12,18 @@ export default function UpdateEmail() {
     const [newEmail, setNewEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    // La lógica la tienes clara gracias al paso anterior
+    //Metodo para actualizar el correo y demas validaciones
     const handleUpdate = async () => {
         if (!newEmail) {
-            Alert.alert('Cuidado', 'Debes ingresar un correo electrónico');
+            Alert.alert('Precaución', 'Debes ingresar un correo electrónico');
             return;
         }
-
         setIsLoading(true);
-
         try {
             await updateEmailUser(newEmail);
             Alert.alert('Éxito', 'Correo electrónico actualizado correctamente');
-            router.back();
+            //debe verificar su correo para continuar en la app
+            router.replace('/(auth)/verifyEmail');
         } catch (error: any) {
             Alert.alert('Error', error.message);
         } finally {
@@ -36,8 +33,6 @@ export default function UpdateEmail() {
 
     return (
         <ScreenLayout>
-
-            {/* 1. Uso de CustomButton para la Navegación (Igual que en tu perfil) */}
             <View className="flex-row items-center mt-4">
                 <CustomButton
                     variant="textOnly"
@@ -65,19 +60,15 @@ export default function UpdateEmail() {
                         autoCapitalize="none"
                     />
                 </View>
-
-                {/* 2. Uso de CustomButton para la Acción principal */}
                 {isLoading ? (
                     <ActivityIndicator size="large" color="#0000ff" />
                 ) : (
                     <CustomButton
                         title="Guardar Cambios"
-                        // Si tu botón acepta props nativos o algo como onPress
                         onPress={handleUpdate}
                     />
                 )}
             </View>
-
         </ScreenLayout>
     );
 }
