@@ -24,6 +24,12 @@ const Login = () => {
 
         try {
             const userData = await loginUser(email, password);
+            if (userData.email_verified_at === null) {
+                // Si El correo NO está verificado: Lo mandamos a tu nueva pantalla
+                router.replace('/verifyEmail'); // o '/(auth)/verifyEmail' según tu estructura
+                return; // Cortamos la ejecución para que no avance
+            }
+            // Si pasó el chequeo, el correo sí está verificado. Lo mandamos adentro de la app.
             console.log("Logueado con exito!");
             router.replace('/dashboard' as any);
         } catch (error: any) {
