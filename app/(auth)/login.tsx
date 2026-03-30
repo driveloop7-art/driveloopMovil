@@ -70,7 +70,7 @@ const Login = () => {
                         title="Clic aquí"
                         variant="textOnly"
                         textClassName='text-sm'
-                        onPress={() => console.log('Forgot password press')}
+                        onPress={() => router.push('/forgot-password' as any)}
                     />
                 </View>
             </View>

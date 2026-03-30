@@ -42,3 +42,17 @@ export const logoutUser = async () => {
     await SecureStore.deleteItemAsync('userToken');
     await SecureStore.deleteItemAsync('userData');
 };
+
+export const requestPasswordReset = async (email: string) => {
+    try {
+        // Se hace la petición POST al endpoint de tu backend Laravel
+        const response = await api.post('/forgot-password', { email });
+        return response.data;
+    } catch (error: any) {
+        if (error.response && error.response.status === 400) {
+            throw new Error(error.response.data.message || 'No se pudo enviar el correo de recuperación.');
+        } else {
+            throw new Error('Error de conexión o el servidor no responde.');
+        }
+    }
+};
