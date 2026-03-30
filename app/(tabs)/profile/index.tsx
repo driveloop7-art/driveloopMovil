@@ -1,8 +1,14 @@
-import { useRouter } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import React from 'react';
 import { Text, View } from 'react-native';
+import { logoutUser } from '../../../api/services/authService';
 import MenuCard from '../../../components/MenuCard';
 import ScreenLayout from '../../../components/ScreenLayout';
+
+const handleLogout = async () => {
+    await logoutUser();
+    router.replace('/login'); // Expulsa al usuario
+};
 
 const AccountSettings = () => {
     const router = useRouter();
@@ -33,7 +39,7 @@ const AccountSettings = () => {
                     <View className="flex-row">
                         <MenuCard
                             title="Borrar cuenta"
-                            onPress={() => console.log('Borrar cuenta')}
+                            onPress={() => router.push('/profile/deleteAccount' as any)}
                         />
                     </View>
                 </View>
@@ -42,7 +48,7 @@ const AccountSettings = () => {
                     <View className="flex-row">
                         <MenuCard
                             title="Cerrar sesión"
-                            onPress={() => console.log('Cerrar sesión')}
+                            onPress={handleLogout}
                         />
                     </View>
                 </View>
