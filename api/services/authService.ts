@@ -117,3 +117,17 @@ export const registerUser = async (userData: any) => {
         }
     }
 };
+
+//Metodo para eliminar cuenta
+export const deleteAccountUser = async (password: string) => {
+    try {
+        const response = await api.post('/user/delete', { password });
+        return response.data;
+    } catch (error: any) {
+        if (error.response && error.response.status === 422) {
+            throw new Error(error.response.data.message || 'Contraseña incorrecta');
+        } else {
+            throw new Error('Error de conexión o el servidor no responde');
+        }
+    }
+};
