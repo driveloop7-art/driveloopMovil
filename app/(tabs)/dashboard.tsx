@@ -1,41 +1,43 @@
 import * as WebBrowser from 'expo-web-browser'; // Permite abrir web internamente
-import React from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-// Simulación de tu Base de Datos o API conectada a tu plataforma Web
-const recommendedCars = [
-  {
-    id: 1,
-    name: 'Tesla Model 3 - 2023',
-    price: '$150,000 COP / día',
-    rating: '⭐ 4.9',
-    image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=1000&auto=format&fit=crop',
-    url: 'https://google.com' // Aquí pondrás la URL del alquiler real de tu web
-  },
-  {
-    id: 2,
-    name: 'Jeep Wrangler Rubicon',
-    price: '$200,000 COP / día',
-    rating: '⭐ 5.0',
-    image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1000&auto=format&fit=crop',
-    url: 'https://google.com'
-  },
-];
+import api from '../../api/axiosConfig';
 
 export default function Dashboard() {
+  const [recommendedCars, setRecommendedCars] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await api.get('/vehicles');
+        if (response.data && response.data.data) {
+          setRecommendedCars(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error al obtener los vehículos recomendados:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVehicles();
+  }, []);
 
   // Función que se encarga de abrir la Web dentro de la app
-  const openCarUrl = async (url: string) => {
+  const openCarUrl = async (codVehiculo: string) => {
+    // Al parecer tu plataforma web no tiene una ruta de 'detalle único de vehículo'
+    // Por lo que lo mandaremos a la pantalla de búsqueda y reserva general.
+    const url = `https://driveloop.ddns.net/busqueda-reserva`;
     await WebBrowser.openBrowserAsync(url);
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="flex-1 px-5 pt-6" showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1 pt-6" showsVerticalScrollIndicator={false}>
 
         {/* Header Atractivo */}
-        <View className="mb-6">
+        <View className="mb-6 px-5">
           <Text className="text-3xl font-roboto-bold text-secondary">
             Descubre tu
           </Text>
@@ -43,52 +45,84 @@ export default function Dashboard() {
             próximo viaje
           </Text>
           <Text className="text-gray-500 mt-2 font-roboto-light">
-            Los autos mejor calificados de Driveloop.
+            Alquila fácil, rápido y seguro, elige el que más te guste.
           </Text>
         </View>
 
-        {/* Vitrina de Autos */}
-        {/* El pd-28 (padding bottom) es vital para que la isla flotante no tape el último auto */}
+        {/* Carrusel de Autos */}
         <View className="pb-28">
-          {recommendedCars.map((car) => (
-            <TouchableOpacity
-              key={car.id}
-              activeOpacity={0.9}
-              onPress={() => openCarUrl(car.url)}
-              className="bg-white rounded-[28px] mb-6 border border-gray-100 overflow-hidden shadow-sm"
-              style={{ elevation: 3 }} // Le da una ligera sombra al auto en Android
+          {loading ? (
+            <View className="py-10 justify-center items-center">
+              <ActivityIndicator size="large" color="#C91843" />
+              <Text className="mt-4 text-gray-400 font-roboto-medium">Cargando autos destacados...</Text>
+            </View>
+          ) : recommendedCars.length === 0 ? (
+            <View className="px-5 py-6">
+              <Text className="text-gray-500 font-roboto-medium">No hay vehículos registrados temporalmente.</Text>
+            </View>
+          ) : (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 20 }}
+              snapToInterval={280 + 16} // card width (280) + marginRight (16)
+              decelerationRate="fast"
             >
-              {/* Imagen del Auto */}
-              <Image
-                source={{ uri: car.image }}
-                className="w-full h-48 bg-gray-200"
-                resizeMode="cover"
-              />
+              {recommendedCars.map((car) => (
+                <TouchableOpacity
+                  key={car.cod || Math.random().toString()}
+                  activeOpacity={0.9}
+                  onPress={() => openCarUrl(car.cod)}
+                  className="bg-white rounded-2xl mr-4 border border-gray-100 shadow-sm"
+                  style={{ width: 280, elevation: 3 }}
+                >
+                  <View className="overflow-hidden rounded-2xl">
+                    {/* Imagen del Auto */}
+                    <Image
+                      source={{ uri: car.imagen }}
+                      className="w-full h-44 bg-gray-100"
+                      resizeMode="cover"
+                    />
 
-              {/* Info de la tarjeta */}
-              <View className="p-5">
-                <View className="flex-row justify-between items-center mb-1">
-                  <Text className="text-lg font-roboto-bold text-secondary">
-                    {car.name}
-                  </Text>
-                  <Text className="text-sm font-roboto-medium text-gray-500">
-                    {car.rating}
-                  </Text>
-                </View>
+                    {/* Info de la tarjeta */}
+                    <View className="p-4">
+                      <View className="flex-row items-center justify-between mb-2">
+                        <View className="flex-row items-center flex-1">
+                          <Text className="font-bold text-gray-900 mr-1 text-sm">Marca:</Text>
+                          <Text className="text-gray-700 uppercase text-xs flex-shrink">{car.marca}</Text>
+                        </View>
+                        <View className="flex-row items-center justify-end flex-1" style={{ marginLeft: 8 }}>
+                          <Text className="font-bold text-gray-900 mr-1 text-sm">Modelo:</Text>
+                          <Text className="text-gray-700 text-xs" numberOfLines={1}>{car.modelo}</Text>
+                        </View>
+                      </View>
 
-                <Text className="text-primary font-roboto-bold text-xl mt-1">
-                  {car.price}
-                </Text>
+                      <View className="flex-row items-center justify-between">
+                        <View className="flex-row items-center flex-1">
+                          <Text className="font-bold text-gray-900 mr-1 text-sm">Línea:</Text>
+                          <Text className="text-gray-700 uppercase text-xs flex-shrink" numberOfLines={1}>{car.linea}</Text>
+                        </View>
+                        <View className="flex-row items-center justify-end flex-1" style={{ marginLeft: 8 }}>
+                          <Text className="font-bold text-gray-900 mr-1 text-sm">Color:</Text>
+                          <Text className="text-gray-700 text-xs" numberOfLines={1}>{car.color}</Text>
+                        </View>
+                      </View>
+                    </View>
 
-                {/* Botón Falso que incentiva a abrir la web */}
-                <View className="bg-primary/10 rounded-2xl mt-4 py-3 items-center">
-                  <Text className="text-primary font-roboto-bold text-sm">
-                    Ver disponibilidad y Alquilar
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
+                    {/* Barra inferior separada (Precio / Rentar) */}
+                    <View className="flex-row mt-2">
+                      <View className="bg-slate-900 px-3 py-3 flex-1 justify-center items-center">
+                        <Text className="text-white font-extrabold text-sm">${car.precio_renta} / DÍA</Text>
+                      </View>
+                      <View className="bg-[#C91843] px-3 py-3 flex-1 justify-center items-center">
+                        <Text className="text-white font-extrabold text-sm">RENTAR</Text>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
         </View>
 
       </ScrollView>
