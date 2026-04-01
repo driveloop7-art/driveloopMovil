@@ -3,10 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import api from '../../api/axiosConfig';
+import { getReservationsUser } from '../../api/services/infoUserService';
+import ReservationCard from '../../components/ReservationCard';
 
 export default function Dashboard() {
   const [recommendedCars, setRecommendedCars] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reservations, setReservations] = useState<any[]>([]);
+  const [loadingReservations, setLoadingReservations] = useState(true);
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -21,7 +25,44 @@ export default function Dashboard() {
         setLoading(false);
       }
     };
+
+    const fetchReservations = async () => {
+      try {
+        const data = await getReservationsUser();
+        let resList: any[] = [];
+
+        // Manejamos distintos formatos de respuesta para extraer el array de reservaciones
+        if (Array.isArray(data)) {
+          resList = data;
+        } else if (data && data.data && Array.isArray(data.data)) {
+          resList = data.data;
+        } else if (data && typeof data === 'object') {
+          resList = (Object.values(data).find(val => Array.isArray(val)) as any[]) || [];
+        }
+
+        // Ordenamos por `id` (o `codigo`) de forma descendente para tener las últimas 4.
+        // Es más confiable ordenar por ID numérico en React Native que por fecha.
+        resList.sort((a, b) => {
+          const idA = a.cod;
+          const idB = b.cod;
+
+          if (idA && idB) {
+            return idB - idA; // Mayor a menor
+          }
+
+          // Fallback a fecrea si no envías el ID (aunque Date a veces falla en iOS)
+          return new Date(b.fecrea).getTime() - new Date(a.fecrea).getTime();
+        });
+        setReservations(resList.slice(0, 4));
+      } catch (error) {
+        console.error("Error al obtener las reservas:", error);
+      } finally {
+        setLoadingReservations(false);
+      }
+    };
+
     fetchVehicles();
+    fetchReservations();
   }, []);
 
   // Función que se encarga de abrir la Web dentro de la app
@@ -50,7 +91,7 @@ export default function Dashboard() {
         </View>
 
         {/* Carrusel de Autos */}
-        <View className="pb-28">
+        <View className="pb-8">
           {loading ? (
             <View className="py-10 justify-center items-center">
               <ActivityIndicator size="large" color="#C91843" />
@@ -122,6 +163,28 @@ export default function Dashboard() {
                 </TouchableOpacity>
               ))}
             </ScrollView>
+          )}
+        </View>
+
+        {/* Últimas Reservas */}
+        <View className="px-5 pb-32">
+          <Text className="text-2xl font-roboto-bold text-secondary mb-4">
+            Tus últimas reservas
+          </Text>
+
+          {loadingReservations ? (
+            <View className="py-6 justify-center items-center">
+              <ActivityIndicator size="large" color="#C91843" />
+              <Text className="mt-4 text-gray-400 font-roboto-medium">Cargando reservaciones...</Text>
+            </View>
+          ) : reservations.length === 0 ? (
+            <View className="bg-gray-50 py-10 rounded-2xl items-center border border-gray-100">
+              <Text className="text-gray-500 font-roboto-medium text-center">No tienes reservas recientes.</Text>
+            </View>
+          ) : (
+            reservations.map((res: any, index: number) => (
+              <ReservationCard key={res.id || index} res={res} />
+            ))
           )}
         </View>
 

@@ -61,7 +61,7 @@ export default function UpdateEmail() {
                     />
                 </View>
                 {isLoading ? (
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <ActivityIndicator size="large" color="#C91843" />
                 ) : (
                     <CustomButton
                         title="Guardar Cambios"
