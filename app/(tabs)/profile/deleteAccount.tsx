@@ -91,7 +91,7 @@ export default function DeleteAccount() {
 
                 {/* Botón de Acción */}
                 {isLoading ? (
-                    <ActivityIndicator size="large" color="#d9534f" />
+                    <ActivityIndicator size="large" color="#C91843" />
                 ) : (
                     <CustomButton
                         title="Eliminar mi cuenta"
