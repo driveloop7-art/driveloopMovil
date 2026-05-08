@@ -1,7 +1,7 @@
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from 'react-native';
 import { registerUser } from '../../api/services/authService';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
@@ -20,6 +20,10 @@ const Register = () => {
 
     // Estado para el checkbox de términos y condiciones
     const [accepted, setAccepted] = useState(false);
+
+    // Estado para controlar la visibilidad de las contraseñas
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
     // Estado para controlar el indicador de carga durante el registro
     const [loading, setLoading] = useState(false);
@@ -119,23 +123,41 @@ const Register = () => {
                     onChangeText={setEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
-                    icon={<MaterialIcons name="mail-outline" size={20} color="#6B7280" />}
+                    icon={<MaterialIcons name="mail-outline" size={20} color="#9CA3AF" />}
                 />
 
                 <CustomInput
                     placeholder="Contraseña"
                     value={password}
                     onChangeText={setPassword}
-                    secureTextEntry
-                    icon={<MaterialIcons name="lock-outline" size={20} color="#6B7280" />}
+                    secureTextEntry={!isPasswordVisible}
+                    icon={<MaterialIcons name="lock-outline" size={20} color="#9CA3AF" />}
+                    rightIcon={
+                        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+                            <Ionicons
+                                name={isPasswordVisible ? "eye-outline" : "eye-off-outline"}
+                                size={22}
+                                color="#C91843"
+                            />
+                        </TouchableOpacity>
+                    }
                 />
 
                 <CustomInput
                     placeholder="Confirmar contraseña"
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
-                    secureTextEntry
+                    secureTextEntry={!isConfirmPasswordVisible}
                     icon={<MaterialIcons name="lock-outline" size={20} color="#6B7280" />}
+                    rightIcon={
+                        <TouchableOpacity onPress={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}>
+                            <Ionicons
+                                name={isConfirmPasswordVisible ? "eye-outline" : "eye-off-outline"}
+                                size={22}
+                                color="#C91843"
+                            />
+                        </TouchableOpacity>
+                    }
                 />
 
                 {/* Términos y Condiciones */}

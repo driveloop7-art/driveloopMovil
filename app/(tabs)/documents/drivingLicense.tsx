@@ -1,8 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState, useEffect } from 'react';
-import { Alert, Text, View, ActivityIndicator } from 'react-native';
-import { uploadDocuments, getMyDocuments } from '../../../api/services/documentService';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Text, View } from 'react-native';
+import { getMyDocuments, uploadDocuments } from '../../../api/services/documentService';
 import CustomButton from '../../../components/CustomButton';
 import DocumentFieldCard from '../../../components/DocumentFieldCard';
 import DocumentUploadCard from '../../../components/DocumentUploadCard';
@@ -81,16 +81,16 @@ const DrivingLicense = () => {
                     </View>
                 ) : docStatus === 'PENDIENTE' || docStatus === 'APROBADO' ? (
                     <View className="flex-1 justify-center items-center px-4">
-                        <MaterialIcons 
-                            name={docStatus === 'APROBADO' ? "check-circle" : "hourglass-empty"} 
-                            size={80} 
-                            color={docStatus === 'APROBADO' ? "#10B981" : "#F59E0B"} 
+                        <MaterialIcons
+                            name={docStatus === 'APROBADO' ? "check-circle" : "hourglass-empty"}
+                            size={80}
+                            color={docStatus === 'APROBADO' ? "#10B981" : "#F59E0B"}
                         />
                         <Text className="text-2xl font-roboto-bold text-secondary mt-6 text-center">
                             {docStatus === 'APROBADO' ? "Licencia Aprobada" : "En Revisión"}
                         </Text>
                         <Text className="text-gray-500 text-center mt-2 font-roboto-light text-base">
-                            {docStatus === 'APROBADO' 
+                            {docStatus === 'APROBADO'
                                 ? "Tu licencia ha sido verificada exitosamente."
                                 : "Tu licencia está siendo revisada por nuestro equipo. Te notificaremos pronto."}
                         </Text>
@@ -113,23 +113,23 @@ const DrivingLicense = () => {
                                 keyboardType="numeric"
                             />
 
-                    <DocumentUploadCard
-                        label="Fotos de la Licencia (Anverso y Reverso)"
-                        onImagesSelected={(front, back) => {
-                            setFrontUri(front);
-                            setBackUri(back);
-                        }}
-                    />
-                </View>
+                            <DocumentUploadCard
+                                label="Fotos de la Licencia (Anverso y Reverso)"
+                                onImagesSelected={(front, back) => {
+                                    setFrontUri(front);
+                                    setBackUri(back);
+                                }}
+                            />
+                        </View>
 
-                <View className="mb-24 mt-6">
-                    <CustomButton
-                        title={isLoading ? "SUBIENDO..." : "SUBIR LICENCIA"}
-                        onPress={handleUpload}
-                        disabled={isLoading}
-                        style={{ borderRadius: 12, opacity: isLoading ? 0.7 : 1 }}
-                    />
-                </View>
+                        <View className="mb-40 mt-6">
+                            <CustomButton
+                                title={isLoading ? "SUBIENDO..." : "SUBIR LICENCIA"}
+                                onPress={handleUpload}
+                                disabled={isLoading}
+                                style={{ borderRadius: 12, opacity: isLoading ? 0.7 : 1 }}
+                            />
+                        </View>
                     </>
                 )}
             </View>

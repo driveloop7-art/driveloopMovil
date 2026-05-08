@@ -1,7 +1,7 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from 'react-native';
 import { loginUser } from '../../api/services/authService';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
@@ -12,6 +12,7 @@ const Login = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
@@ -56,10 +57,19 @@ const Login = () => {
 
                 <CustomInput
                     placeholder="Contraseña"
-                    secureTextEntry
+                    secureTextEntry={!isPasswordVisible}
                     icon={<MaterialIcons name="lock-outline" size={20} color="#6B7280" />}
                     value={password}
                     onChangeText={setPassword}
+                    rightIcon={
+                        <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+                            <Ionicons
+                                name={isPasswordVisible ? "eye-outline" : "eye-off-outline"}
+                                size={22}
+                                color="#C91843"
+                            />
+                        </TouchableOpacity>
+                    }
                 />
 
                 <View className="flex-row justify-between mt-2">

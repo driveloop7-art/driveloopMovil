@@ -1,11 +1,11 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Text, View, Alert } from 'react-native';
+import { Alert, Text, View } from 'react-native';
+import api from '../../../api/axiosConfig';
 import CustomButton from '../../../components/CustomButton';
 import PasswordUpdateCard from '../../../components/PasswordUpdateCard';
 import ScreenLayout from '../../../components/ScreenLayout';
-import api from '../../../api/axiosConfig';
 
 const UpdatePassword = () => {
     const router = useRouter();
@@ -30,7 +30,7 @@ const UpdatePassword = () => {
         try {
             // Activamos el indicador de carga para evitar toques dobles al botón
             setIsLoading(true);
-            
+
             // Enviamos los datos al backend. 'api' automáticamente inyectará el token 
             // de autorización del usuario guardado en SecureStore (axiosConfig.ts).
             const response = await api.put('/update-password', {
@@ -38,7 +38,7 @@ const UpdatePassword = () => {
                 password: newPassword,
                 password_confirmation: confirmPassword
             });
-            
+
             // Si Laravel procesa bien el cambio, mostramos un mensaje de éxito
             Alert.alert("Éxito", "La contraseña se actualizó correctamente.");
             // Limpiamos los campos
@@ -92,7 +92,7 @@ const UpdatePassword = () => {
                     />
                 </View>
 
-                <View className="mb-24 mt-6">
+                <View className="mb-40 mt-6">
                     {/* Al presionar confirmación ejecutamos handleConfirm, y cuando está enviando datos mostramos un mensaje visual y desactivamos interacciones */}
                     <CustomButton
                         title={isLoading ? "ACTUALIZANDO..." : "CONFIRMAR"}

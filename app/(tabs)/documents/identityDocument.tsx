@@ -1,8 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState, useEffect } from 'react';
-import { Alert, Text, View, ActivityIndicator, Modal, FlatList, TouchableOpacity } from 'react-native';
-import { uploadDocuments, getMyDocuments, getDocumentTypes } from '../../../api/services/documentService';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, FlatList, Modal, Text, TouchableOpacity, View } from 'react-native';
+import { getDocumentTypes, getMyDocuments, uploadDocuments } from '../../../api/services/documentService';
 import CustomButton from '../../../components/CustomButton';
 import DocumentFieldCard from '../../../components/DocumentFieldCard';
 import DocumentUploadCard from '../../../components/DocumentUploadCard';
@@ -36,7 +36,7 @@ const IdentityDocument = () => {
                 // 2. Verificar si el usuario ya subió algo
                 const docs = await getMyDocuments();
                 // Evitamos el tipo 2 que es licencia. Asumimos el resto como identidad
-                const myDoc = docs.find((d: any) => d.idtipdocusu !== 2); 
+                const myDoc = docs.find((d: any) => d.idtipdocusu !== 2);
                 if (myDoc) {
                     setDocStatus(myDoc.estado);
                 }
@@ -98,16 +98,16 @@ const IdentityDocument = () => {
                     </View>
                 ) : docStatus === 'PENDIENTE' || docStatus === 'APROBADO' ? (
                     <View className="flex-1 justify-center items-center px-4">
-                        <MaterialIcons 
-                            name={docStatus === 'APROBADO' ? "check-circle" : "hourglass-empty"} 
-                            size={80} 
-                            color={docStatus === 'APROBADO' ? "#10B981" : "#F59E0B"} 
+                        <MaterialIcons
+                            name={docStatus === 'APROBADO' ? "check-circle" : "hourglass-empty"}
+                            size={80}
+                            color={docStatus === 'APROBADO' ? "#10B981" : "#F59E0B"}
                         />
                         <Text className="text-2xl font-roboto-bold text-secondary mt-6 text-center">
                             {docStatus === 'APROBADO' ? "Documento Aprobado" : "En Revisión"}
                         </Text>
                         <Text className="text-gray-500 text-center mt-2 font-roboto-light text-base">
-                            {docStatus === 'APROBADO' 
+                            {docStatus === 'APROBADO'
                                 ? "Tu documento de identidad ha sido verificado exitosamente."
                                 : "Tu documento está siendo revisado por nuestro equipo. Te notificaremos pronto."}
                         </Text>
@@ -138,25 +138,25 @@ const IdentityDocument = () => {
                                 keyboardType="numeric"
                             />
 
-                    {/* Atrapamos las rutas de las fotos */}
-                    <DocumentUploadCard
-                        label="Fotos del Documento (Anverso y Reverso)"
-                        onImagesSelected={(front, back) => {
-                            setFrontUri(front);
-                            setBackUri(back);
-                        }}
-                    />
-                </View>
+                            {/* Atrapamos las rutas de las fotos */}
+                            <DocumentUploadCard
+                                label="Fotos del Documento (Anverso y Reverso)"
+                                onImagesSelected={(front, back) => {
+                                    setFrontUri(front);
+                                    setBackUri(back);
+                                }}
+                            />
+                        </View>
 
-                {/* Botón Inteligente */}
-                <View className="mb-24 mt-6">
-                    <CustomButton
-                        title={isLoading ? "SUBIENDO..." : "SUBIR IDENTIDAD"}
-                        onPress={handleUpload}
-                        disabled={isLoading}
-                        style={{ borderRadius: 12, opacity: isLoading ? 0.7 : 1 }}
-                    />
-                </View>
+                        {/* Botón Inteligente */}
+                        <View className="mb-40 mt-6">
+                            <CustomButton
+                                title={isLoading ? "SUBIENDO..." : "SUBIR IDENTIDAD"}
+                                onPress={handleUpload}
+                                disabled={isLoading}
+                                style={{ borderRadius: 12, opacity: isLoading ? 0.7 : 1 }}
+                            />
+                        </View>
                     </>
                 )}
             </View>
@@ -170,7 +170,7 @@ const IdentityDocument = () => {
                             data={docTypes}
                             keyExtractor={(item) => item.id.toString()}
                             renderItem={({ item }) => (
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                     className="py-4 border-b border-gray-100"
                                     onPress={() => {
                                         setSelectedDocType(item);
@@ -183,10 +183,10 @@ const IdentityDocument = () => {
                             )}
                         />
                         <View className="mt-4">
-                            <CustomButton 
-                                title="CANCELAR" 
-                                variant="outline" 
-                                onPress={() => setIsModalVisible(false)} 
+                            <CustomButton
+                                title="CANCELAR"
+                                variant="outline"
+                                onPress={() => setIsModalVisible(false)}
                             />
                         </View>
                     </View>

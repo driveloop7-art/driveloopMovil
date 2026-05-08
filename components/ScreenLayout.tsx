@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface ScreenLayoutProps {
@@ -9,24 +9,35 @@ interface ScreenLayoutProps {
 }
 
 const ScreenLayout = ({ children, scrollable = true, paddingHorizontal = 24 }: ScreenLayoutProps) => {
-    if (scrollable) {
+
+    const renderContent = () => {
         return (
-            <SafeAreaView className="flex-1 bg-white">
-                <ScrollView
-                    contentContainerStyle={{ flexGrow: 1, paddingHorizontal }}
-                    className="flex-1"
-                >
-                    {children}
-                </ScrollView>
-            </SafeAreaView>
+            // Evita que el teclado tape los inputs
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{ flex: 1 }}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+            >
+                {scrollable ? (
+                    <ScrollView
+                        contentContainerStyle={{ flexGrow: 1, paddingHorizontal }}
+                        className="flex-1"
+                        keyboardShouldPersistTaps="handled" // Cierra teclado al tocar fuera
+                    >
+                        {children}
+                    </ScrollView>
+                ) : (
+                    <View style={{ flex: 1, paddingHorizontal }}>
+                        {children}
+                    </View>
+                )}
+            </KeyboardAvoidingView>
         );
-    }
+    };
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <View style={{ flex: 1, paddingHorizontal }}>
-                {children}
-            </View>
+            {renderContent()}
         </SafeAreaView>
     );
 };
