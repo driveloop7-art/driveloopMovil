@@ -14,7 +14,7 @@ const AccountSettings = () => {
     const router = useRouter();
 
     return (
-        <ScreenLayout>
+        <ScreenLayout withTabBar>
             {/* Header con botón Volver */}
             <View className="flex-row items-center mt-4 mb-10">
                 <View className="flex-1 items-center mr-8">

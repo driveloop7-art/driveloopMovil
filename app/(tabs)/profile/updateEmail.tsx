@@ -32,7 +32,7 @@ export default function UpdateEmail() {
     };
 
     return (
-        <ScreenLayout>
+        <ScreenLayout withTabBar>
             <View className="flex-row items-center mt-4">
                 <CustomButton
                     variant="textOnly"

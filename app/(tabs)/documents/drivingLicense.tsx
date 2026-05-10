@@ -61,7 +61,7 @@ const DrivingLicense = () => {
     };
 
     return (
-        <ScreenLayout>
+        <ScreenLayout withTabBar>
             <View className="flex-row items-center mt-4 mb-10">
                 <CustomButton
                     variant="textOnly"

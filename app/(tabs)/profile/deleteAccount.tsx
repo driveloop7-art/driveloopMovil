@@ -57,7 +57,7 @@ export default function DeleteAccount() {
     };
 
     return (
-        <ScreenLayout>
+        <ScreenLayout withTabBar>
             {/* Header / Botón Volver */}
             <View className="flex-row items-center mt-4">
                 <CustomButton

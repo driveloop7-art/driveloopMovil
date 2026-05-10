@@ -1,34 +1,52 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+// Altura total que ocupa la isla flotante del tab bar (height 65 + bottom 25 + buffer 10)
+const TAB_BAR_SPACE = 100;
 
 interface ScreenLayoutProps {
     children: React.ReactNode;
     scrollable?: boolean;
     paddingHorizontal?: number;
+    /** Activar en pantallas dentro del Tab Navigator para evitar que la isla flotante tape el contenido */
+    withTabBar?: boolean;
 }
 
-const ScreenLayout = ({ children, scrollable = true, paddingHorizontal = 24 }: ScreenLayoutProps) => {
+const ScreenLayout = ({ children, scrollable = true, paddingHorizontal = 24, withTabBar = false }: ScreenLayoutProps) => {
+    const paddingBottom = withTabBar ? TAB_BAR_SPACE : 0;
+
     if (scrollable) {
         return (
             <SafeAreaView className="flex-1 bg-white">
-                <ScrollView
-                    contentContainerStyle={{ flexGrow: 1, paddingHorizontal }}
-                    className="flex-1"
+                <KeyboardAwareScrollView
+                    contentContainerStyle={{ flexGrow: 1, paddingHorizontal, paddingBottom }}
+                    enableOnAndroid={true}
+                    extraScrollHeight={30}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
                 >
                     {children}
-                </ScrollView>
+                </KeyboardAwareScrollView>
             </SafeAreaView>
         );
     }
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <View style={{ flex: 1, paddingHorizontal }}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={{ flex: 1, paddingHorizontal, paddingBottom }}
+                enableOnAndroid={true}
+                extraScrollHeight={30}
+                keyboardShouldPersistTaps="handled"
+                scrollEnabled={false}
+            >
                 {children}
-            </View>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 };
 
 export default ScreenLayout;
+

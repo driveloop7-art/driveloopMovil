@@ -50,7 +50,7 @@ export default function ProfileInfo() {
   // 3. Renderizado: Interfaz de Carga
   if (isLoading) {
     return (
-      <ScreenLayout paddingHorizontal={8}>
+      <ScreenLayout paddingHorizontal={8} withTabBar>
         <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" color="#C91843" />
           <Text className="mt-4 text-gray-500">Cargando información...</Text>
@@ -62,7 +62,7 @@ export default function ProfileInfo() {
   // 4. Renderizado: Interfaz de Error
   if (error) {
     return (
-      <ScreenLayout paddingHorizontal={8}>
+      <ScreenLayout paddingHorizontal={8} withTabBar>
         <View className="flex-1 justify-center items-center">
           <Text className="text-red-500 mb-4 text-center font-roboto-bold text-lg">{error}</Text>
           <CustomButton title="Intentar de nuevo" onPress={fetchProfileData} />
@@ -73,7 +73,7 @@ export default function ProfileInfo() {
 
   // 5. Renderizado Principal (Datos Reales)
   return (
-    <ScreenLayout>
+    <ScreenLayout withTabBar>
       {/* Boton Volver */}
       <View className="flex-row items-center mt-4">
         <CustomButton
