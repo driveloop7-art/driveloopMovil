@@ -77,7 +77,7 @@ const IdentityDocument = () => {
     };
 
     return (
-        <ScreenLayout>
+        <ScreenLayout withTabBar>
             {/* Header */}
             <View className="flex-row items-center mt-4 mb-10">
                 <CustomButton

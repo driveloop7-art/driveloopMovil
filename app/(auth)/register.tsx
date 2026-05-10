@@ -1,12 +1,15 @@
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
 import { registerUser } from '../../api/services/authService';
 import CustomButton from '../../components/CustomButton';
 import CustomInput from '../../components/CustomInput';
 import Logo from '../../components/Logo';
+import PasswordRulesModal from '../../components/PasswordRulesModal';
+import PasswordStrengthMeter from '../../components/PasswordStrengthMeter';
 import ScreenLayout from '../../components/ScreenLayout';
+import { usePasswordMeter } from '../../components/usePasswordMeter';
 
 const Register = () => {
     const router = useRouter();
@@ -24,6 +27,12 @@ const Register = () => {
     // Estado para controlar el indicador de carga durante el registro
     const [loading, setLoading] = useState(false);
 
+    // Estado para controlar la visibilidad del modal de reglas
+    const [rulesModalVisible, setRulesModalVisible] = useState(false);
+
+    // Hook de validación de contraseña (mismas reglas que el backend Laravel)
+    const { conditions, strength, allConditionsMet } = usePasswordMeter(password);
+
     /**
      * Función principal que procesa el registro al presionar el botón
      */
@@ -34,13 +43,19 @@ const Register = () => {
             return;
         }
 
-        // Validación 2: Ambas contraseñas deben ser idénticas
+        // Validación 2: Contraseña debe cumplir todas las condiciones de seguridad
+        if (!allConditionsMet) {
+            Alert.alert('Error', 'La contraseña no cumple con todos los requisitos de seguridad');
+            return;
+        }
+
+        // Validación 3: Ambas contraseñas deben ser idénticas
         if (password !== confirmPassword) {
             Alert.alert('Error', 'Las contraseñas no coinciden');
             return;
         }
 
-        // Validación 3: El usuario debe aceptar los términos legales
+        // Validación 4: El usuario debe aceptar los términos legales
         if (!accepted) {
             Alert.alert('Error', 'Debes aceptar los términos y condiciones');
             return;
@@ -122,13 +137,37 @@ const Register = () => {
                     icon={<MaterialIcons name="mail-outline" size={20} color="#6B7280" />}
                 />
 
-                <CustomInput
-                    placeholder="Contraseña"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                    icon={<MaterialIcons name="lock-outline" size={20} color="#6B7280" />}
-                />
+                {/* Contraseña con botón de info para abrir modal de reglas */}
+                <View>
+                    <View className="flex-row items-center">
+                        <View className="flex-1">
+                            <CustomInput
+                                placeholder="Contraseña"
+                                value={password}
+                                onChangeText={setPassword}
+                                secureTextEntry
+                                icon={<MaterialIcons name="lock-outline" size={20} color="#6B7280" />}
+                            />
+                        </View>
+                        <Pressable
+                            onPress={() => setRulesModalVisible(true)}
+                            className="ml-2 mb-4"
+                            style={{
+                                width: 28,
+                                height: 28,
+                                borderRadius: 14,
+                                backgroundColor: '#C9184318',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Ionicons name="shield-checkmark-outline" size={15} color="#C91843" />
+                        </Pressable>
+                    </View>
+
+                    {/* Medidor de fuerza debajo del input */}
+                    <PasswordStrengthMeter strength={strength} />
+                </View>
 
                 <CustomInput
                     placeholder="Confirmar contraseña"
@@ -156,10 +195,21 @@ const Register = () => {
                 {loading ? (
                     <ActivityIndicator size="large" color="#C91843" />
                 ) : (
-                    <CustomButton title="Registrarse" onPress={handleRegister} />
+                    <CustomButton
+                        title="Registrarse"
+                        onPress={handleRegister}
+                        disabled={!allConditionsMet || !accepted}
+                        style={{ opacity: (!allConditionsMet || !accepted) ? 0.5 : 1 }}
+                    />
                 )}
             </View>
 
+            {/* Modal de reglas de contraseña */}
+            <PasswordRulesModal
+                visible={rulesModalVisible}
+                onClose={() => setRulesModalVisible(false)}
+                conditions={conditions}
+            />
         </ScreenLayout>
     );
 };

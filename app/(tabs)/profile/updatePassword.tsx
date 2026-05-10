@@ -1,10 +1,13 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Text, View, Alert } from 'react-native';
+import { Text, View, Alert, Pressable } from 'react-native';
 import CustomButton from '../../../components/CustomButton';
 import PasswordUpdateCard from '../../../components/PasswordUpdateCard';
+import PasswordRulesModal from '../../../components/PasswordRulesModal';
+import PasswordStrengthMeter from '../../../components/PasswordStrengthMeter';
 import ScreenLayout from '../../../components/ScreenLayout';
+import { usePasswordMeter } from '../../../components/usePasswordMeter';
 import api from '../../../api/axiosConfig';
 
 const UpdatePassword = () => {
@@ -14,10 +17,22 @@ const UpdatePassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    // Estado para controlar la visibilidad del modal de reglas
+    const [rulesModalVisible, setRulesModalVisible] = useState(false);
+
+    // Hook de validación de contraseña (mismas reglas que el backend Laravel)
+    const { conditions, strength, allConditionsMet } = usePasswordMeter(newPassword);
+
     const handleConfirm = async () => {
         // Validamos que el usuario haya llenado todos los campos antes de intentar enviar
         if (!currentPassword || !newPassword || !confirmPassword) {
             Alert.alert("Error", "Todos los campos son obligatorios.");
+            return;
+        }
+
+        // Validación de seguridad: la nueva contraseña debe cumplir todas las condiciones
+        if (!allConditionsMet) {
+            Alert.alert("Error", "La nueva contraseña no cumple con todos los requisitos de seguridad.");
             return;
         }
 
@@ -59,7 +74,7 @@ const UpdatePassword = () => {
     };
 
     return (
-        <ScreenLayout>
+        <ScreenLayout withTabBar>
             <View className="flex-row items-center mt-4 mb-10">
                 <CustomButton
                     variant="textOnly"
@@ -79,11 +94,37 @@ const UpdatePassword = () => {
                         onChangeText={setCurrentPassword}
                     />
 
-                    <PasswordUpdateCard
-                        label="Ingresa la contraseña nueva"
-                        value={newPassword}
-                        onChangeText={setNewPassword}
-                    />
+                    {/* Nueva contraseña con botón de info y medidor */}
+                    <View>
+                        <View className="flex-row items-start">
+                            <View className="flex-1">
+                                <PasswordUpdateCard
+                                    label="Ingresa la contraseña nueva"
+                                    value={newPassword}
+                                    onChangeText={setNewPassword}
+                                />
+                            </View>
+                            <Pressable
+                                onPress={() => setRulesModalVisible(true)}
+                                className="mt-4 ml-2"
+                                style={{
+                                    width: 28,
+                                    height: 28,
+                                    borderRadius: 14,
+                                    backgroundColor: '#C9184318',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <Ionicons name="shield-checkmark-outline" size={15} color="#C91843" />
+                            </Pressable>
+                        </View>
+
+                        {/* Medidor de fuerza debajo del card de nueva contraseña */}
+                        <View style={{ marginTop: -8 }}>
+                            <PasswordStrengthMeter strength={strength} />
+                        </View>
+                    </View>
 
                     <PasswordUpdateCard
                         label="Confirmar contraseña"
@@ -97,11 +138,21 @@ const UpdatePassword = () => {
                     <CustomButton
                         title={isLoading ? "ACTUALIZANDO..." : "CONFIRMAR"}
                         onPress={handleConfirm}
-                        disabled={isLoading}
-                        style={{ borderRadius: 12, opacity: isLoading ? 0.7 : 1 }}
+                        disabled={isLoading || !allConditionsMet}
+                        style={{
+                            borderRadius: 12,
+                            opacity: (isLoading || !allConditionsMet) ? 0.5 : 1,
+                        }}
                     />
                 </View>
             </View>
+
+            {/* Modal de reglas de contraseña */}
+            <PasswordRulesModal
+                visible={rulesModalVisible}
+                onClose={() => setRulesModalVisible(false)}
+                conditions={conditions}
+            />
         </ScreenLayout>
     );
 };
