@@ -1,5 +1,6 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Altura total que ocupa la isla flotante del tab bar (height 65 + bottom 25 + buffer 10)
@@ -19,34 +20,33 @@ const ScreenLayout = ({ children, scrollable = true, paddingHorizontal = 24, wit
     if (scrollable) {
         return (
             <SafeAreaView className="flex-1 bg-white">
-                <KeyboardAvoidingView
-                    className="flex-1"
-                    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                <KeyboardAwareScrollView
+                    contentContainerStyle={{ flexGrow: 1, paddingHorizontal, paddingBottom }}
+                    enableOnAndroid={true}
+                    extraScrollHeight={30}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
                 >
-                    <ScrollView
-                        contentContainerStyle={{ flexGrow: 1, paddingHorizontal, paddingBottom }}
-                        className="flex-1"
-                        keyboardShouldPersistTaps="handled"
-                    >
-                        {children}
-                    </ScrollView>
-                </KeyboardAvoidingView>
+                    {children}
+                </KeyboardAwareScrollView>
             </SafeAreaView>
         );
     }
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <KeyboardAvoidingView
-                className="flex-1"
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            <KeyboardAwareScrollView
+                contentContainerStyle={{ flex: 1, paddingHorizontal, paddingBottom }}
+                enableOnAndroid={true}
+                extraScrollHeight={30}
+                keyboardShouldPersistTaps="handled"
+                scrollEnabled={false}
             >
-                <View style={{ flex: 1, paddingHorizontal, paddingBottom }}>
-                    {children}
-                </View>
-            </KeyboardAvoidingView>
+                {children}
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 };
 
 export default ScreenLayout;
+
